@@ -40,10 +40,12 @@ As a computer science student, I built this project to explore **DOM Injection**
 4.  **Load Unpacked**: Click "Load unpacked" and select this project folder.
 5.  **Pin & Use**: Pin the extension and refresh any open website to see ALON!
 
-6.  # DEMO
+# DEMO
 
 <img width="1870" height="180" alt="image" src="https://github.com/user-attachments/assets/05bf014e-78f5-41ec-b0bd-7e1655216c5c" />
 
-<img width="757" height="379" alt="image" src="https://github.com/user-attachments/assets/77961958-9b33-4e67-ac0e-bbc660f44893" />
+
+<img width="429" height="305" alt="image" src="https://github.com/user-attachments/assets/74ba93b0-e265-45f7-9d99-c25b3ead28ec" />
+
 
 
