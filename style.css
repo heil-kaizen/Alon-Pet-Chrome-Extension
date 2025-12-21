@@ -1,26 +1,23 @@
 #alon-container {
   position: fixed;
   bottom: 20px;
-  z-index: 2147483647;
+  z-index: 2147483647; /* Highest layer possible */
   pointer-events: none;
-  /* Animates ONLY the movement from left to right and back */
   animation: moveAcross 40s linear infinite;
 }
 
 #alon-sprite {
-  /* Changed from 120px to 150px for a slightly larger size */
   width: 150px; 
   height: auto;
   display: block;
-  /* Animates ONLY the flip when he reaches the turn-around point */
   animation: flipSprite 40s steps(1) infinite;
 }
 
 #alon-bubble {
   position: absolute;
-  bottom: 160px; /* Adjusted up slightly to accommodate the larger sprite */
+  bottom: 160px; 
   left: 50%;
-  transform: translateX(-50%); /* Centers the bubble horizontally */
+  transform: translateX(-50%);
   background-color: #ffffff;
   color: #000000;
   border: 4px solid #000;
@@ -32,19 +29,20 @@
   font-weight: bold;
   font-size: 16px;
   box-shadow: 8px 8px 0px rgba(0,0,0,0.2);
-  display: none; /* Hidden by default */
+  display: none;
+  pointer-events: auto; /* Allow users to click the bubble */
 }
 
-/* MOVEMENT: Moves the container across the viewport width */
+/* Movement Animation */
 @keyframes moveAcross {
-  0% { left: -180px; } /* Adjusted starting point for larger sprite */
+  0% { left: -180px; }
   50% { left: calc(100vw + 50px); }
   100% { left: -180px; }
 }
 
-/* FLIP: Flips the sprite specifically so the bubble text stays readable */
+/* Flip Sprite only (prevents bubble from flipping) */
 @keyframes flipSprite {
-  0%   { transform: scaleX(1); }  /* Walking Right */
-  50%  { transform: scaleX(-1); } /* Walking Left */
+  0%   { transform: scaleX(1); }  
+  50%  { transform: scaleX(-1); } 
   100% { transform: scaleX(1); }  
 }
