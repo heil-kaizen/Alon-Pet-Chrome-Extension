@@ -1,20 +1,21 @@
 {
   "manifest_version": 3,
-  "name": "Alon's Motivation",
-  "version": "1.5",
-  "description": "A walking buddy that gives motivational quotes every 2 minutes.",
-  "permissions": ["activeTab", "scripting", "alarms"],
+  "name": "Alon Pet v2",
+  "version": "2.1",
+  "permissions": ["activeTab", "scripting", "alarms", "storage"],
   "background": {
     "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
+      "js": ["mood.js", "content.js"],
       "css": ["style.css"]
     }
   ],
-  "action": {},
   "web_accessible_resources": [
     {
       "resources": ["alon.gif"], 
