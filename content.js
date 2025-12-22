@@ -1,122 +1,166 @@
 /**
- * Alon Pet v2 - Content Script
- * Manages the visual presence, animations, and interaction logic on the webpage.
+ * Alon Pet v2.5 - Content Script
+ * Handles Animations, Idle Sleep, and Random Reactions.
  */
 
-// 1. Initialize Mood System (Assumes mood.js is loaded first via manifest)
-const moodSystem = new MoodManager();
+class PetController {
+    constructor() {
+        this.state = 'walking'; // walking, sleeping, jumping, eating
+        this.idleTimer = null;
+        this.randomTimer = null;
+        this.animationTimer = null;
 
-// 2. DOM Elements Creation
-const container = document.createElement('div');
-container.id = 'alon-container';
+        // Configuration
+        this.GIFS = {
+            walk: chrome.runtime.getURL('alon.gif'),
+            sleep: chrome.runtime.getURL('alon-sleep.gif'),
+            jump: chrome.runtime.getURL('alon-jump.gif'),
+            money: chrome.runtime.getURL('alon-money.gif')
+        };
+        
+        this.IDLE_THRESHOLD = 120000; // 2 minutes (120,000 ms)
+        this.ANIMATION_DURATION = 8000; // 8 seconds per action GIF
+    }
 
-const bubble = document.createElement('div');
-bubble.id = 'alon-bubble';
+    init() {
+        this.createDOM();
+        this.startIdleTracker();
+        this.scheduleNextRandomAction();
+        this.setupMessageListener();
+    }
 
-// Wrapper separates the "Flip" animation from the "Jiggle" animation
-const wrapper = document.createElement('div');
-wrapper.id = 'alon-wrapper';
+    createDOM() {
+        // Create Container
+        this.container = document.createElement('div');
+        this.container.id = 'alon-container';
 
-const sprite = document.createElement('img');
-sprite.id = 'alon-sprite';
-// Ensures the image is pulled from the extension assets
-sprite.src = chrome.runtime.getURL('alon.gif'); 
+        // Bubble
+        this.bubble = document.createElement('div');
+        this.bubble.id = 'alon-bubble';
 
-// Assemble the structure
-wrapper.appendChild(sprite);
-container.appendChild(bubble);
-container.appendChild(wrapper);
-document.body.appendChild(container);
+        // Wrapper (for flipping)
+        this.wrapper = document.createElement('div');
+        this.wrapper.id = 'alon-wrapper';
 
-// 3. Mood & Movement Application
-function applyMood(state) {
-    // Set the walk speed via the CSS variable defined in style.css
-    container.style.setProperty('--walk-speed', state.speed);
-    
-    // Adjust opacity for 'sleepy' mood
-    container.style.opacity = state.opacity;
-    
-    // Ensure the flipping direction animation matches the walking speed
-    wrapper.style.setProperty('animation-duration', state.speed);
+        // Sprite
+        this.sprite = document.createElement('img');
+        this.sprite.id = 'alon-sprite';
+        this.sprite.src = this.GIFS.walk;
+
+        // Assemble
+        this.wrapper.appendChild(this.sprite);
+        this.container.appendChild(this.bubble);
+        this.container.appendChild(this.wrapper);
+        document.body.appendChild(this.container);
+    }
+
+    // --- FEATURE 1: IDLE SLEEP LOGIC ---
+    startIdleTracker() {
+        // Reset timer on any mouse movement
+        document.addEventListener('mousemove', () => this.resetIdleTimer());
+        document.addEventListener('keydown', () => this.resetIdleTimer());
+        document.addEventListener('scroll', () => this.resetIdleTimer());
+
+        // Start the initial timer
+        this.resetIdleTimer();
+    }
+
+    resetIdleTimer() {
+        // If he was sleeping, WAKE UP immediately
+        if (this.state === 'sleeping') {
+            this.setWalking();
+        }
+
+        // Clear existing timer
+        if (this.idleTimer) clearTimeout(this.idleTimer);
+
+        // Set new timer for 2 minutes
+        this.idleTimer = setTimeout(() => {
+            this.setSleeping();
+        }, this.IDLE_THRESHOLD);
+    }
+
+    // --- FEATURE 2: RANDOM REACTIONS ---
+    scheduleNextRandomAction() {
+        // Random time between 60s (60000ms) and 120s (120000ms)
+        const delay = Math.floor(Math.random() * (120000 - 60000 + 1) + 60000);
+
+        if (this.randomTimer) clearTimeout(this.randomTimer);
+
+        this.randomTimer = setTimeout(() => {
+            // Only trigger if we are currently just walking
+            if (this.state === 'walking') {
+                // 50/50 chance for Jump or Money
+                Math.random() > 0.5 ? this.playAnimation('jump') : this.playAnimation('money');
+            }
+            // Recursively schedule the next one
+            this.scheduleNextRandomAction();
+        }, delay);
+    }
+
+    // --- STATE & ANIMATION MANAGER ---
+    setWalking() {
+        console.log("Alon: Returning to Walk");
+        this.state = 'walking';
+        this.sprite.src = this.GIFS.walk;
+        
+        // Remove 'paused' so he starts moving across screen again
+        this.container.classList.remove('paused');
+        this.wrapper.classList.remove('paused');
+    }
+
+    setSleeping() {
+        if (this.state === 'sleeping') return; // Already sleeping
+        console.log("Alon: Going to Sleep (Idle)");
+        
+        this.state = 'sleeping';
+        this.sprite.src = this.GIFS.sleep;
+        
+        // Add 'paused' to stop sliding movement
+        this.container.classList.add('paused');
+        this.wrapper.classList.add('paused');
+    }
+
+    playAnimation(type) {
+        if (this.state === 'sleeping') return; // Don't interrupt sleep for random actions
+        console.log(`Alon: Playing ${type}`);
+
+        this.state = type; // 'jump' or 'money'
+        this.sprite.src = this.GIFS[type];
+
+        // Pause movement so he performs action in place
+        this.container.classList.add('paused');
+        this.wrapper.classList.add('paused');
+
+        // Reset back to walking after 8 seconds
+        if (this.animationTimer) clearTimeout(this.animationTimer);
+        this.animationTimer = setTimeout(() => {
+            this.setWalking();
+        }, this.ANIMATION_DURATION);
+    }
+
+    // --- MESSAGING SYSTEM ---
+    setupMessageListener() {
+        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+            // 1. Manual Triggers
+            if (request.action === "trigger_jump") this.playAnimation('jump');
+            if (request.action === "trigger_money") this.playAnimation('money');
+            if (request.action === "trigger_sleep") this.setSleeping();
+            
+            // 2. Quote System (Legacy Support)
+            if (request.action === "show_quote") this.showQuote();
+        });
+    }
+
+    showQuote() {
+        const quotes = ["You've got this!", "Keep clicking", "Alon is proud of you.", "Touch grass.", "Take a break!", "You'r HIM"];
+        const text = quotes[Math.floor(Math.random() * quotes.length)];
+        this.bubble.textContent = text;
+        this.bubble.style.display = 'block';
+        setTimeout(() => { this.bubble.style.display = 'none'; }, 5000);
+    }
 }
 
-// 4. Interaction: Petting/Wake Up Logic
-function performPetAction() {
-    // Logic: Force mood to 'happy'
-    moodSystem.pet();
-    
-    // Visuals: Trigger the jiggle animation defined in style.css
-    sprite.classList.remove('pet-animation');
-    void sprite.offsetWidth; // Force DOM reflow to restart animation
-    sprite.classList.add('pet-animation');
-}
-
-// Click directly on Alon to pet him
-sprite.addEventListener('click', (e) => {
-    e.stopPropagation();
-    performPetAction();
-});
-
-// 5. Message Listener (Handles Popup & Background triggers)
-let quoteTimer; 
-const quotes = [
-    "You've got this, Sakin!",
-    "ALON believes in your code!",
-    "Errors are just part of the journey.",
-    "Keep walking toward your goals!",
-    "Stay focused and stay awesome!",
-    "Success is 1% inspiration and 99% perspiration."
-];
-
-chrome.runtime.onMessage.addListener((request) => {
-    // Action from "Get Quote" button or Background Timer
-    if (request.action === "show_quote") {
-        const quote = quotes[Math.floor(Math.random() * quotes.length)];
-        
-        // Clear existing timer for consistent 5-second display
-        if (quoteTimer) clearTimeout(quoteTimer);
-
-        bubble.textContent = quote;
-        bubble.style.display = 'block';
-        
-        quoteTimer = setTimeout(() => { 
-            bubble.style.display = 'none'; 
-            quoteTimer = null; 
-        }, 5000); 
-    }
-    
-    // Action from "Wake Up" button in Popup
-    if (request.action === "pet_alon") {
-        performPetAction();
-    }
-});
-
-// 6. Behavior: Random Pauses (Simulates thinking/idling)
-setInterval(() => {
-    const state = moodSystem.getState();
-    // Roll the dice based on current mood's pause chance
-    if (Math.random() < state.pauseChance) {
-        container.classList.add('paused');
-        wrapper.classList.add('paused'); 
-        
-        // Stay paused for 2-5 seconds
-        setTimeout(() => {
-            container.classList.remove('paused');
-            wrapper.classList.remove('paused');
-        }, 2000 + Math.random() * 3000);
-    }
-}, 10000);
-
-// 7. Event Listeners for State Updates
-window.addEventListener('moodChange', () => {
-    applyMood(moodSystem.getState());
-});
-
-// Manual close for bubble
-bubble.addEventListener('click', () => {
-    bubble.style.display = 'none';
-    if (quoteTimer) clearTimeout(quoteTimer);
-});
-
-// Initial state application on load
-applyMood(moodSystem.getState());
+// Initialize
+const alonPet = new PetController();
+alonPet.init();
