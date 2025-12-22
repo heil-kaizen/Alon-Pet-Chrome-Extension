@@ -1,51 +1,70 @@
-# ALON Browser Buddy
+# 🐾 Alon Pet v2.5 - Your Browser Companion
 
-**ALON Browser Buddy** is a personalized Chrome extension designed to bring a touch of motivation and companionship to your web browsing experience. It features a digital character named **ALON** who walks along the bottom of your screen and provides uplifting quotes when prompted.
+**Alon Pet** is a fun, interactive Chrome Extension that adds a digital companion to your browsing experience. Alon walks across your screen, reacts to your activity, and keeps you motivated with quotes.
 
----
-
-## 🚀 Overview
-As a computer science student, I built this project to explore **DOM Injection**, **CSS Keyframe Animations**, and **Asynchronous Message Passing** within the Chrome Extension API. ALON is not just a sprite; he is a state-managed element that interacts with the user without interfering with the website's functionality.
+> **v2.5 Update:** Now features automatic sleep states, random funny reactions (jumping, eating money), and a full control panel!
 
 ---
 
-## ✨ Key Features
-* **Smooth Character Animation**: ALON walks smoothly across the viewport using a 40-second linear CSS animation.
-* **Non-Flipping Quote Bubble**: A custom "Double Animation" logic ensures that while ALON flips direction, the motivational text remains upright and readable.
-* **Funky UI**: The speech bubble features a "hand-drawn" aesthetic with a bold Comic Sans font.
-* **On-Demand Motivation**: Clicking the extension icon triggers a random quote from a curated library.
+## ✨ Features
+
+### 🧠 Smart Behavior
+* **Walking Mode**: Alon patrols the bottom of your screen with a smooth 40-second walk cycle.
+* **Idle Sleep System**: If you don't move your mouse for **2 minutes**, Alon automatically pulls out a sleeping bag and takes a nap. He wakes up instantly when you move the cursor!
+* **Random Reactions**: Every 60–120 seconds, Alon might spontaneously **Jump** or **Eat Money** to keep things interesting.
+
+### 🎮 Interactive Control Panel
+* **Manual Triggers**: Use the extension popup menu to force Alon to:
+    * 🦘 **Jump**
+    * 💸 **Eat Money**
+    * 💤 **Sleep**
+* **Motivation**: Click the "Get Quote" button (or click Alon himself) to see a motivational message.
+
+### 🎨 Visuals
+* **Smooth Transitions**: Animations switch seamlessly between walking, sleeping, and jumping states without glitching.
+* **Non-Intrusive**: Alon stays at the bottom of the page and ignores mouse clicks unless you specifically interact with him.
+* **Directional Flipping**: He faces the direction he is walking!
 
 ---
 
-## 🛠️ Technical Breakdown
+## 🛠️ Installation Guide
 
-### 📂 File Structure
-* `manifest.json`: The core configuration using **Manifest V3**.
-* `content.js`: The "Engine" that injects ALON into the page.
-* `background.js`: The "Controller" service worker that listens for toolbar icon clicks.
-* `style.css`: The "Animator" containing complex keyframes for movement.
-* `alon.gif`: The character sprite (optimized with a transparent background).
-
-### 🔧 Core Logic
-* **Z-Index Layering**: Uses a maximum `z-index` (2147483647) to stay above all web content.
-* **Pointer Events**: The container uses `pointer-events: none` so you can still click links behind ALON.
+1.  **Clone or Download** this repository to your computer.
+2.  Open Google Chrome and navigate to `chrome://extensions/`.
+3.  Enable **Developer Mode** (toggle switch in the top right corner).
+4.  Click the **Load Unpacked** button.
+5.  Select the folder where you saved these files.
+6.  **Pin the Extension**: Click the puzzle piece icon in Chrome and pin **Alon Pet v2.5** to your toolbar.
 
 ---
 
-## 📥 Installation
+## 📂 Project Structure
 
-1.  **Clone the Repo**: Download this folder to your local machine.
-2.  **Open Extensions**: Go to `chrome://extensions/` in your browser.
-3.  **Developer Mode**: Toggle "Developer mode" in the top right.
-4.  **Load Unpacked**: Click "Load unpacked" and select this project folder.
-5.  **Pin & Use**: Pin the extension and refresh any open website to see ALON!
+| File | Description |
+| :--- | :--- |
+| **manifest.json** | The configuration file (Manifest V3) that defines permissions and assets. |
+| **content.js** | The "Brain" of the project. Contains the `PetController` class which handles the state machine (Walking/Sleeping/Jumping) and timers. |
+| **style.css** | Handles the CSS animations, flipping logic, and positioning. |
+| **popup.html/js** | The Control Panel UI that appears when you click the extension icon. |
+| **background.js** | Service worker that manages browser events and alarms. |
+| **Assets** | `alon.gif`, `alon-jump.gif`, `alon-sleep.gif`, `alon-money.gif`. |
 
-# DEMO
+---
 
-<img width="1870" height="180" alt="image" src="https://github.com/user-attachments/assets/05bf014e-78f5-41ec-b0bd-7e1655216c5c" />
+## 💻 Tech Stack
 
+* **JavaScript (ES6+)**: Uses Classes and Event Listeners for clean state management.
+* **CSS3**: Uses Keyframes and CSS Variables for performant animations.
+* **Chrome Extension API**: Uses `runtime.sendMessage` and `tabs.sendMessage` for communication between the Popup and the Content Script.
 
-<img width="429" height="305" alt="image" src="https://github.com/user-attachments/assets/74ba93b0-e265-45f7-9d99-c25b3ead28ec" />
+---
 
+## 🚀 Future Roadmap
 
+* [ ] **Custom Skins**: Allow users to upload their own character sprites.
+* [ ] **Stats Tracker**: Count how many miles Alon has walked.
+* [ ] **Sound Effects**: Add optional cute sounds for jumping and eating.
 
+---
+
+*Built with ❤️ by Sakin*
