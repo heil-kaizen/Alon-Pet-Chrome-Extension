@@ -67,4 +67,14 @@
 
 ---
 
+#DEMO:
+
+<img width="261" height="352" alt="image" src="https://github.com/user-attachments/assets/d50b1857-0e1e-4230-9a81-07b434e7b5dc" />
+<img width="558" height="102" alt="image" src="https://github.com/user-attachments/assets/a9f95515-75bc-4995-b414-846f007e5d0a" />
+<img width="705" height="241" alt="image" src="https://github.com/user-attachments/assets/a851b477-0715-48ef-8144-eebf04d782e0" />
+<img width="255" height="130" alt="image" src="https://github.com/user-attachments/assets/6523b919-99cd-412a-ba34-75dbb4c4abba" />
+<img width="570" height="139" alt="image" src="https://github.com/user-attachments/assets/6150eeea-51dc-4e34-b1a6-70de517ba30c" />
+
+
+
 *Vibe Coded by Kaizen*
