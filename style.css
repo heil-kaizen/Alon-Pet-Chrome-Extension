@@ -13,12 +13,20 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    transition: opacity 1s ease;
 }
 
-/* 2. WRAPPER */
+/* STOP MOVING when sleeping/jumping */
+#alon-container.paused {
+    animation-play-state: paused !important;
+}
+
+/* 2. WRAPPER (Handles Flipping) */
 #alon-wrapper {
     animation: flipSprite var(--walk-speed) steps(1) infinite;
+}
+
+#alon-wrapper.paused {
+    animation-play-state: paused !important;
 }
 
 /* 3. SPRITE */
@@ -26,19 +34,9 @@
     width: 150px; 
     height: auto;
     display: block;
-    pointer-events: auto;
-    cursor: grab;
+    pointer-events: auto; /* Allows clicking */
+    cursor: pointer;
     transition: transform 0.2s ease;
-}
-
-/* Petting Animation (Jiggle Only) */
-.pet-animation {
-    animation: happyJiggle 0.5s ease-in-out;
-}
-
-/* Paused state */
-.paused {
-    animation-play-state: paused !important;
 }
 
 /* 4. BUBBLE */
@@ -73,12 +71,4 @@
     0% { transform: scaleX(1); }
     50% { transform: scaleX(-1); }
     100% { transform: scaleX(1); }
-}
-
-@keyframes happyJiggle {
-    0% { transform: scale(1); }
-    25% { transform: scale(1.1) rotate(-10deg); }
-    50% { transform: scale(0.9) rotate(10deg); }
-    75% { transform: scale(1.1) rotate(-5deg); }
-    100% { transform: scale(1); }
 }
