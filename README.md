@@ -67,4 +67,4 @@
 
 ---
 
-*Built with ❤️ by Sakin*
+*Vibe Coded by Kaizen*
