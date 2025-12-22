@@ -1,35 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
   <style>
     body {
-      width: 200px;
+      width: 220px;
       padding: 15px;
       font-family: 'Comic Sans MS', cursive;
       text-align: center;
-      background-color: #f0f0f0;
+      background-color: #f4f4f4;
     }
-    h2 { font-size: 18px; margin-bottom: 10px; }
+    h2 { margin: 0 0 15px 0; color: #333; }
+    .btn-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
     button {
-      width: 100%;
       padding: 10px;
-      margin: 5px 0;
       cursor: pointer;
       border: 3px solid #000;
       background: #fff;
       font-weight: bold;
-      border-radius: 10px;
-      transition: 0.2s;
+      border-radius: 12px;
+      transition: all 0.2s;
+      font-family: inherit;
     }
-    button:hover { background: #e0e0e0; transform: scale(1.05); }
-    .status { font-size: 12px; color: #666; margin-top: 10px; }
+    button:hover { background: #ffe600; transform: scale(1.05); }
+    button:active { transform: scale(0.95); }
+    .status { font-size: 12px; color: #666; margin-top: 15px; }
   </style>
 </head>
 <body>
   <h2>ALON Control</h2>
-  <button id="get-quote">Get Quote</button>
-  <button id="wake-up">Wake Up!</button>
-  <div class="status">Alon is watching you...</div>
+  
+  <div class="btn-grid">
+    <button id="btn-jump">Jump 🦘</button>
+    <button id="btn-money">Eat Money 💸</button>
+    <button id="btn-sleep">Sleep 💤</button>
+    <hr style="width: 100%; border: 1px dashed #ccc;">
+    <button id="btn-quote">Get Quote 💬</button>
+  </div>
+
+  <div class="status">Alon is watching...</div>
   <script src="popup.js"></script>
 </body>
 </html>
